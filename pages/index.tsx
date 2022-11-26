@@ -1,6 +1,6 @@
 import { GetStaticProps, NextPage } from "next";
 
-import { Button } from "@nextui-org/react";
+import { pokeApi } from "../api";
 
 import { Layout } from "../components/layouts";
 
@@ -21,9 +21,12 @@ const HomePage: NextPage = () => {
 };
 
 export const getStaticProps: GetStaticProps = async (ctx) => {
+  const { data } = await pokeApi.get("/pokemon?limit=151");
+  console.log(data);
   return {
     props: {
       name: "Wilber Paredes",
+      pokemons: data,
     },
   };
 };
