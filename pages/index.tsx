@@ -4,6 +4,7 @@ import { GetStaticProps, NextPage } from "next";
 import { pokeApi } from "../api";
 
 import { Layout } from "../components/layouts";
+import { PokemonCard } from "../components/pokemon";
 import { PokemonListResponse, SmallPokemon } from "../interfaces";
 
 interface Props {
@@ -15,20 +16,8 @@ const HomePage: NextPage<Props> = ({ pokemons }) => {
   return (
     <Layout title="Listado de Pokémons">
       <Grid.Container gap={2} justify="flex-start">
-        {pokemons.map(({ id, name, url, img }, key) => (
-          <Grid key={key} xs={6} sm={3} md={2} xl={1}>
-            <Card hoverable clickable>
-              <Card.Body css={{ p: 1 }}>
-                <Card.Image src={`${url}${img}`} width="100%" height={140} />
-              </Card.Body>
-              <Card.Footer>
-                <Row justify="space-between">
-                  <Text transform="capitalize">{name}</Text>
-                  <Text>#{id}</Text>
-                </Row>
-              </Card.Footer>
-            </Card>
-          </Grid>
+        {pokemons.map((pokemon, key) => (
+          <PokemonCard pokemon={pokemon} key={key} />
         ))}
       </Grid.Container>
     </Layout>
