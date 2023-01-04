@@ -1,49 +1,38 @@
 import { GetStaticProps, NextPage, GetStaticPaths } from "next";
 import { useRouter } from "next/router";
+import { pokeApi } from "../../api";
 import { Layout } from "../../components/layouts";
+import { Pokemon } from "../../interfaces";
 
 interface Props {
-  id: string;
-  name: string;
+  pokemon: Pokemon;
 }
 
-const PokemonPage: NextPage<Props> = ({ id, name }) => {
-  const router = useRouter();
-  console.log("router", router.query);
+const PokemonPage: NextPage<Props> = ({ pokemon }) => {
   return (
-    <Layout title="Algún pokemon">
-      <h1>Hola mundo</h1>
+    <Layout title={`${pokemon.name}`}>
+      <h1>{pokemon.name}</h1>
     </Layout>
   );
 };
 
 export const getStaticPaths: GetStaticPaths = async (ctx) => {
+  const pokemon151 = [...Array(151)].map((value, index) => `${index + 1}`);
   return {
-    paths: [
-      {
-        params: {
-          id: "1",
-        },
-      },
-    ],
+    paths: pokemon151.map((id) => ({
+      params: { id },
+    })),
     fallback: false,
   };
 };
 
-export const getStaticProps: GetStaticProps = async (ctx) => {
-  // const { data } = await pokeApi.get<PokemonListResponse>("/pokemon?limit=151");
-
-  // const pokemons: SmallPokemon[] = data.results.map((item, key) => ({
-  //   id: (key + 1).toString(),
-  //   img: `${key + 1}.svg`,
-  //   name: item.name,
-  //   url: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/dream-world/`,
-  // }));
+export const getStaticProps: GetStaticProps = async ({ params }) => {
+  const { id } = params as { id: string };
+  const { data: pokemon } = await pokeApi.get<Pokemon>(`/pokemon/${id}`);
 
   return {
     props: {
-      id: 1,
-      name: "hola",
+      pokemon,
     },
   };
 };
